@@ -1,0 +1,10 @@
+{
+  "modules": [
+    {
+      "id": "fastapi-reference",
+      "title": "FastAPI Reference Template",
+      "subtitle": "A reference guide for building FastAPI services",
+      "description": "Covers Swagger metadata, architecture, async database layer, ORM models, Pydantic schemas, CRUD routers, sub-collection endpoints, and MCP server integration."
+    }
+  ]
+}
