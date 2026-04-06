@@ -5,6 +5,12 @@
       "title": "FastAPI Reference Template",
       "subtitle": "A reference guide for building FastAPI services",
       "description": "Covers Swagger metadata, architecture, async database layer, ORM models, Pydantic schemas, CRUD routers, sub-collection endpoints, and MCP server integration."
+    },
+    {
+      "id": "pr-annotate-2",
+      "title": "PR #2: Add optional PR learning module generation",
+      "subtitle": "KAN-93 — annotate",
+      "description": "Annotated walkthrough of changes in PR #2. Adds a new optional step to the task workflow for generating learning modules."
     }
   ]
 }
