@@ -1,0 +1,23 @@
+{
+  "id": "pr-annotate-3",
+  "title": "PR #3: Update Studio button to green",
+  "subtitle": "KAN-102 — annotate",
+  "description": "Annotated walkthrough of changes in PR #3. Updates the Studio button colour on the landing page.",
+  "lessons": [
+    {
+      "id": "overview",
+      "title": "PR Overview",
+      "view": "markdown",
+      "guide": "## PR #3: Update Studio button to green\n\n**Task:** KAN-102 · **Repo:** annotate · **Branch:** feature/green-studio-button\n\n### What this PR does\n\nA simple visual change — updates the Studio button on the Annotate landing page from gray to green (emerald-600).\n\n### Why\n\nThe Studio button was visually indistinct from the rest of the page. Making it green gives it more prominence as a call-to-action, signalling that it's an interactive tool rather than just another navigation link.\n\n### Files changed\n\n| File | What changed |\n|------|-------------|\n| `src/components/ModuleLanding.tsx` | Changed button Tailwind classes from gray to emerald |\n\n### Impact\n\nPurely cosmetic — no logic changes, no new dependencies."
+    },
+    {
+      "id": "module-landing",
+      "title": "ModuleLanding.tsx",
+      "view": "code",
+      "file": "ModuleLanding.tsx",
+      "addedLines": [82],
+      "removedLines": [],
+      "guide": "## src/components/ModuleLanding.tsx\n\nThe landing page component that displays the module grid and the Studio button.\n\n### What changed\n\nOne line — the Tailwind CSS classes on the Studio `<a>` tag:\n\n**Before:**\n```\nbg-gray-800 hover:bg-gray-700 text-gray-300 border-gray-700\n```\n\n**After:**\n```\nbg-emerald-600 hover:bg-emerald-500 text-white border-emerald-500\n```\n\nThe green-highlighted line 82 shows the updated classes. The button now uses Tailwind's `emerald` colour scale:\n- `bg-emerald-600` — solid green background\n- `hover:bg-emerald-500` — slightly lighter on hover\n- `text-white` — white text (was gray-300)\n- `border-emerald-500` — matching green border\n\n### Design note\n\nEmerald was chosen over plain green because it's softer and fits better with the dark theme. The 600/500 shade pair gives a subtle hover effect without being too flashy."
+    }
+  ]
+}

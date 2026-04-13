@@ -11,6 +11,12 @@
       "title": "PR #2: Add optional PR learning module generation",
       "subtitle": "KAN-93 — annotate",
       "description": "Annotated walkthrough of changes in PR #2. Adds a new optional step to the task workflow for generating learning modules."
+    },
+    {
+      "id": "pr-annotate-3",
+      "title": "PR #3: Update Studio button to green",
+      "subtitle": "KAN-102 — annotate",
+      "description": "Annotated walkthrough of changes in PR #3. Updates the Studio button colour on the landing page."
     }
   ]
 }
