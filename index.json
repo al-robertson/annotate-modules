@@ -1,6 +1,12 @@
 {
   "modules": [
     {
+      "id": "about-annotate",
+      "title": "About Annotate",
+      "subtitle": "How this app works and how to create modules",
+      "description": "A self-referencing guide to the Annotate app. Covers architecture, module format, key components, diff highlighting, and creating new modules."
+    },
+    {
       "id": "fastapi-reference",
       "title": "FastAPI Reference Template",
       "subtitle": "A reference guide for building FastAPI services",
@@ -9,13 +15,13 @@
     {
       "id": "pr-annotate-2",
       "title": "PR #2: Add optional PR learning module generation",
-      "subtitle": "KAN-93 — annotate",
+      "subtitle": "KAN-93 \u2014 annotate",
       "description": "Annotated walkthrough of changes in PR #2. Adds a new optional step to the task workflow for generating learning modules."
     },
     {
       "id": "pr-annotate-3",
       "title": "PR #3: Update Studio button to green",
-      "subtitle": "KAN-102 — annotate",
+      "subtitle": "KAN-102 \u2014 annotate",
       "description": "Annotated walkthrough of changes in PR #3. Updates the Studio button colour on the landing page."
     }
   ]

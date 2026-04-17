@@ -1,0 +1,71 @@
+{
+  "id": "about-annotate",
+  "title": "About Annotate",
+  "subtitle": "How this app works, the tech stack, and how to create modules",
+  "description": "A self-referencing guide to the Annotate app itself. Covers the architecture, module format, key components, diff highlighting, and how to create new learning modules.",
+  "lessons": [
+    {
+      "id": "overview",
+      "title": "What is Annotate?",
+      "view": "markdown",
+      "guide": "## What is Annotate?\n\nAnnotate is a data-driven learning app for code documentation and guided walkthroughs. It presents content in a three-panel layout:\n\n- **Left sidebar** \u2014 lesson navigation\n- **Middle panel** \u2014 code viewer, diagrams, iframes, or images\n- **Right panel** \u2014 markdown guide notes explaining the content\n\n### How it works\n\nAnnotate is a static React app. It has no backend. All module content is fetched at runtime from the [annotate-modules](https://github.com/al-robertson/annotate-modules) GitHub repo via raw.githubusercontent.com.\n\n```\nUser opens module \u2192 App fetches module.json from GitHub\n                  \u2192 Renders lessons with code + guide panels\n                  \u2192 Fetches source files on demand\n```\n\nThis means new modules can be added without changing or redeploying the app.\n\n### Tech stack\n\n| Technology | Purpose |\n|-----------|---------|\n| React 19 | UI framework |\n| TypeScript | Type safety |\n| Vite 8 | Build tool + dev server |\n| Tailwind CSS 4 | Styling |\n| react-router-dom | Client-side routing (HashRouter) |\n| react-markdown + remark-gfm | Markdown rendering |\n| react-syntax-highlighter | Code syntax highlighting (Prism) |\n| Mermaid.js | Architecture and ER diagrams |\n\n### Key features\n\n- **Multiple view types** \u2014 code, diagrams, iframes, images, full-width markdown\n- **Diff highlighting** \u2014 green/red line markers for PR walkthroughs\n- **Copy to clipboard** \u2014 on all code blocks\n- **Mobile responsive** \u2014 hamburger menu + tab switching\n- **Studio** \u2014 module editor (in development)\n- **PR modules** \u2014 auto-generated walkthroughs for pull requests"
+    },
+    {
+      "id": "architecture",
+      "title": "Architecture",
+      "view": "diagram",
+      "diagrams": [
+        {
+          "title": "Data Flow",
+          "chart": "graph LR\n  User([User]) --> |opens module| App[\"Annotate App\\n\u2014\\nReact SPA\"]\n  App --> |fetches| GH[\"GitHub Raw\\n\u2014\\nannotate-modules\"]\n  GH --> |index.json| App\n  GH --> |module.json| App\n  GH --> |source files| App\n  App --> |renders| UI[\"Three-Panel UI\\n\u2014\\nCode + Guide\"]\n\n  style User fill:#0f172a,stroke:#60a5fa,color:#f1f5f9\n  style App fill:#1e3a5f,stroke:#3b82f6,color:#f1f5f9\n  style GH fill:#1a3329,stroke:#10b981,color:#f1f5f9\n  style UI fill:#2d1f54,stroke:#a78bfa,color:#f1f5f9"
+        },
+        {
+          "title": "Component Structure",
+          "chart": "graph TD\n  Main[\"main.tsx\\n\u2014\\nRoutes\"] --> Landing[\"ModuleLanding\\n\u2014\\nHome page\"]\n  Main --> Viewer[\"ModuleViewer\\n\u2014\\nLesson display\"]\n  Main --> Studio[\"Studio\\n\u2014\\nModule editor\"]\n  Viewer --> CodePanel[\"ModuleCodePanel\\n\u2014\\nSyntax + diff\"]\n  Viewer --> GuidePanel[\"GuidePanel\\n\u2014\\nMarkdown\"]\n  Viewer --> DiagramPanel[\"DiagramPanel\\n\u2014\\nMermaid\"]\n  Viewer --> IframePanel[\"IframePanel\\n\u2014\\nEmbedded URLs\"]\n\n  style Main fill:#1e3a5f,stroke:#3b82f6,color:#f1f5f9\n  style Landing fill:#1a3329,stroke:#10b981,color:#f1f5f9\n  style Viewer fill:#1a3329,stroke:#10b981,color:#f1f5f9\n  style Studio fill:#1a3329,stroke:#10b981,color:#f1f5f9\n  style CodePanel fill:#2d1f54,stroke:#a78bfa,color:#f1f5f9\n  style GuidePanel fill:#2d1f54,stroke:#a78bfa,color:#f1f5f9\n  style DiagramPanel fill:#2d1f54,stroke:#a78bfa,color:#f1f5f9\n  style IframePanel fill:#2d1f54,stroke:#a78bfa,color:#f1f5f9"
+        }
+      ],
+      "guide": "## Architecture\n\n### Data Flow\n\nThe app is a static SPA with no backend. Content flows from GitHub:\n\n1. **ModuleLanding** fetches `index.json` to list available modules\n2. **ModuleViewer** fetches `{moduleId}/module.json` for lesson definitions\n3. **ModuleCodePanel** fetches `{moduleId}/files/{filename}` for source code\n\nAll fetches go to `raw.githubusercontent.com` via the configurable `MODULES_BASE_URL`.\n\n### Component Structure\n\n- **main.tsx** \u2014 defines routes using HashRouter\n- **ModuleLanding** \u2014 the home page grid of module cards\n- **ModuleViewer** \u2014 the three-panel layout that renders lessons\n- **Panel components** \u2014 each view type has its own panel (code, diagram, iframe, image, markdown)\n- **Studio** \u2014 the module editor (separate route)\n\n### Why HashRouter?\n\nThe app uses `HashRouter` (URLs like `/#/module/my-module`) instead of `BrowserRouter`. This means it works as a static site without server-side routing \u2014 any static host (GitHub Pages, S3, nginx) can serve it without rewrite rules."
+    },
+    {
+      "id": "config",
+      "title": "config.ts",
+      "view": "code",
+      "file": "config.ts",
+      "guide": "## src/config.ts\n\nThe single configuration point for where modules are loaded from.\n\n### MODULES_BASE_URL\n\nThis controls where the app fetches all module content. It defaults to the `annotate-modules` GitHub repo via raw.githubusercontent.com.\n\n### How to override\n\nSet the `VITE_MODULES_BASE_URL` environment variable:\n\n```bash\n# Use local files during development\nVITE_MODULES_BASE_URL=/modules npm run dev\n\n# Point at a different repo or CDN\nVITE_MODULES_BASE_URL=https://cdn.example.com/modules npm run build\n```\n\n### Why this matters\n\nEvery component that fetches module data imports `MODULES_BASE_URL` from this file. Changing the source is a single config change \u2014 no code modifications needed."
+    },
+    {
+      "id": "types",
+      "title": "types.ts",
+      "view": "code",
+      "file": "types.ts",
+      "guide": "## src/types.ts\n\nThe TypeScript interfaces that define the module data format.\n\n### Key types\n\n- **`Lesson`** \u2014 a single lesson within a module. The `view` field determines what appears in the middle panel. Optional fields like `file`, `url`, `diagrams`, `addedLines`, `removedLines` are used by specific view types.\n\n- **`ModuleConfig`** \u2014 the full module definition loaded from `module.json`. Contains metadata (title, subtitle, description) and an array of lessons.\n\n- **`ModulesIndex`** \u2014 the listing loaded from `index.json`. Contains an array of `ModuleMeta` entries shown on the home page.\n\n### View types\n\n| Type | Middle panel | Required fields |\n|------|-------------|-----------------|\n| `code` | Syntax-highlighted file | `file` |\n| `diagram` | Mermaid charts | `diagrams` |\n| `iframe` | Embedded URL | `url` |\n| `markdown` | Full-width guide | `guide` only |\n| `image` | Image display | `url` |\n\n### Diff highlighting fields\n\n`addedLines` and `removedLines` are optional number arrays. When present, the code panel highlights those lines green or red \u2014 used for PR walkthrough modules."
+    },
+    {
+      "id": "module-viewer",
+      "title": "ModuleViewer.tsx",
+      "view": "code",
+      "file": "ModuleViewer.tsx",
+      "guide": "## src/components/ModuleViewer.tsx\n\nThe main component that renders a module's lessons in the three-panel layout.\n\n### What it does\n\n1. Reads the `moduleId` from the URL params\n2. Fetches `module.json` from the modules source\n3. Renders a sidebar with numbered lesson navigation\n4. Renders the active lesson's content in the middle panel\n5. Renders the guide markdown in the right panel\n\n### The `renderContentPanel` switch\n\nThe key logic is in `renderContentPanel()` \u2014 a switch statement that maps the lesson's `view` type to the correct panel component:\n\n- `code` \u2192 `ModuleCodePanel` (with diff props)\n- `diagram` \u2192 `DiagramPanel`\n- `iframe` / `swagger` \u2192 `IframePanel`\n- `image` \u2192 `ImagePanel`\n- `markdown` \u2192 full-width `GuidePanel`\n\n### Responsive design\n\nOn desktop: sidebar + content + guide side by side.\nOn mobile: hamburger menu for sidebar, tabs to switch between content and guide.\n\n### Error handling\n\nIf the module can't be loaded, a centered error card is shown with a back button. This handles cases where a module ID in the URL doesn't exist in the modules repo."
+    },
+    {
+      "id": "code-panel",
+      "title": "ModuleCodePanel.tsx",
+      "view": "code",
+      "file": "ModuleCodePanel.tsx",
+      "guide": "## src/components/ModuleCodePanel.tsx\n\nThe code viewer component with syntax highlighting and diff support.\n\n### How it works\n\n1. Fetches the source file from `{MODULES_BASE_URL}/{moduleId}/files/{file}`\n2. Detects the language from the file extension\n3. Renders with `react-syntax-highlighter` using the Prism oneDark theme\n4. Optionally highlights changed lines using `addedLines` / `removedLines`\n\n### Diff highlighting\n\nThe `lineProps` callback checks each line number against the `addedSet` and `removedSet`:\n\n- **Added lines** \u2192 green left border + subtle green background (12% opacity)\n- **Removed lines** \u2192 red left border + subtle red background\n- **Unchanged lines** \u2192 no decoration\n\nThe header bar shows `+N lines` / `-N lines` counts when diff data is present.\n\n### Theme customisation\n\nThe `cleanTheme` strips background colours from the oneDark theme tokens so the diff highlighting backgrounds show through cleanly.\n\n### Language detection\n\nThe `EXT_TO_LANG` map covers common file types. Falls back to `text` for unknown extensions."
+    },
+    {
+      "id": "landing",
+      "title": "ModuleLanding.tsx",
+      "view": "code",
+      "file": "ModuleLanding.tsx",
+      "guide": "## src/components/ModuleLanding.tsx\n\nThe home page that displays available modules as a card grid.\n\n### How it works\n\n1. Fetches `index.json` from the modules source\n2. Renders each module as a clickable card with title, subtitle, and description\n3. Clicking a card navigates to `/module/{moduleId}`\n\n### The Studio button\n\nAt the bottom of the page, a green button links to the Studio (`/#/studio`) \u2014 the module editor.\n\n### Module cards\n\nEach card shows:\n- **Title** \u2014 bold, turns blue on hover\n- **Subtitle** \u2014 smaller gray text (e.g. task key + repo name for PR modules)\n- **Description** \u2014 smallest text, explains what the module covers\n- **Arrow icon** \u2014 visual affordance that it's clickable\n\n### Error state\n\nIf `index.json` can't be loaded (e.g. GitHub is down or the URL is wrong), a centered error card is shown."
+    },
+    {
+      "id": "creating-modules",
+      "title": "Creating Modules",
+      "view": "markdown",
+      "guide": "## How to Create a Module\n\n### Manual creation\n\n1. Create a folder in the `annotate-modules` repo: `my-module/`\n2. Add `my-module/module.json` with the lesson definitions\n3. Add source files in `my-module/files/` (for code view lessons)\n4. Update `index.json` to include the new module entry\n5. Push to main \u2014 the module appears in the app immediately\n\n### module.json template\n\n```json\n{\n  \"id\": \"my-module\",\n  \"title\": \"My Module Title\",\n  \"subtitle\": \"Optional subtitle\",\n  \"description\": \"Shown on the home page card\",\n  \"lessons\": [\n    {\n      \"id\": \"intro\",\n      \"title\": \"Introduction\",\n      \"view\": \"markdown\",\n      \"guide\": \"## Welcome\\n\\nYour guide content here...\"\n    },\n    {\n      \"id\": \"main-code\",\n      \"title\": \"main.py\",\n      \"view\": \"code\",\n      \"file\": \"main.py\",\n      \"guide\": \"## Main module\\n\\nExplanation of the code...\"\n    }\n  ]\n}\n```\n\n### PR modules (automatic)\n\nThe Kiro task workflow (step 8) can generate modules automatically for PRs. When Kiro asks \"Want a learning module for this PR?\" and you say yes, it:\n\n1. Reads the changed files from the PR\n2. Generates annotated walkthroughs for each file\n3. Pushes the module to `annotate-modules` with diff highlighting data\n4. Adds a link to the PR description\n\nPR module IDs follow the format `pr-{repo}-{pr-number}`.\n\n### Using Studio\n\nThe Studio (accessible from the green button on the home page) provides a visual editor for creating and editing modules. It's currently in development.\n\n### Tips\n\n- Start with a `markdown` overview lesson to set context\n- Use `code` lessons for the main content \u2014 code on the left, explanation on the right\n- Add `diagram` lessons for architecture overviews\n- Keep guide text concise \u2014 explain *why*, not just *what*\n- For PR modules, include `addedLines` to highlight what changed"
+    }
+  ]
+}
